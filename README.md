@@ -1,0 +1,2 @@
+# KnightMare
+Contest Template
