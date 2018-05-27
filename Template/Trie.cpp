@@ -59,6 +59,6 @@ int main()
     {
         string s;
         cin>>s;
-        cout<<count(s)<<endl;
+        cout<<count(s)<<endl; 
     }
 }
