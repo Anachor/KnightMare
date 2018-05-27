@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int N=1e6+7;
+const int N=1e6+10;
 int tr[N][26];
 int pop[N];
 int sz=0;
@@ -15,11 +15,11 @@ void init()
 void insert(string &s)
 {
     pop[0]++;
-    for (int i=0, cur=0; i<s.size(); i++) {
+	for (int i=0, cur=0; i<s.size(); i++) {
         int c=s[i]-'a';
-		if(tr[cur][c] == -1)  tr[cur][c]=++sz;
-		cur = tr[cur][c];
-		pop[cur]++;
+        if(tr[cur][c] == -1)  tr[cur][c]=++sz;
+        cur = tr[cur][c];
+        pop[cur]++;
 	}
 }
 
@@ -28,8 +28,8 @@ int count(string &s)        //Prefix count
     int cur=0;
     for (int i=0; i<s.size(); i++) {
         int c=s[i]-'a';
-		if(tr[cur][c] == -1)  return 0;
-		cur = tr[cur][c];
+        if(tr[cur][c] == -1)  return 0;
+        cur = tr[cur][c];
 	}
 	return pop[cur];
 }
@@ -59,6 +59,6 @@ int main()
     {
         string s;
         cin>>s;
-        cout<<count(s)<<endl; 
+        cout<<count(s)<<endl;
     }
 }
