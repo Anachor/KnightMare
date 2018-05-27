@@ -61,4 +61,4 @@ int main()
         cin>>s;
         cout<<count(s)<<endl;
     }
-}
+} 
