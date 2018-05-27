@@ -15,8 +15,7 @@ void init()
 void insert(string &s)
 {
     pop[0]++;
-	for (int i=0, cur=0; i<s.size(); i++)
-    {
+    for (int i=0, cur=0; i<s.size(); i++) {
         int c=s[i]-'a';
 		if(tr[cur][c] == -1)  tr[cur][c]=++sz;
 		cur = tr[cur][c];
@@ -27,8 +26,7 @@ void insert(string &s)
 int count(string &s)        //Prefix count
 {
     int cur=0;
-    for (int i=0; i<s.size(); i++)
-    {
+    for (int i=0; i<s.size(); i++) {
         int c=s[i]-'a';
 		if(tr[cur][c] == -1)  return 0;
 		cur = tr[cur][c];
