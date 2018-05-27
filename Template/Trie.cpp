@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int N=1e6+10;
+const int N=1e6+7;
 int tr[N][26];
 int pop[N];
 int sz=0;
