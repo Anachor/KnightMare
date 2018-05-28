@@ -62,6 +62,7 @@ PLL inverse(PLL a)  {
 
 PLL pb[N];      ///powers of base mod M
 PLL invb;
+
 ///Call pre before everything
 void hashPre() {
     pb[0] = mp(1,1);
@@ -138,40 +139,30 @@ PLL substringHash(const vector<PLL> &hashlist, int l, int r) {
     return ((hashlist[r] - hashlist[l-1]*pb[len])%M+M)%M;
 }
 
+
+///Solves LightOJ 1255-Substring Frequency
+///You are given two strings A and B. You have to find 
+///the number of times B occurs as a substring of A.
+char buffer[N];
 int main()
 {
     hashPre();
-    string s;
-    cin>>s;
-    PLL hash = Hash(s);
-    cout<<s<<" "<<hash<<" "<<Hash(s)<<endl;
+    int t;
+    scanf("%d", &t);
 
-    while (true) {
-        int type, id;
-        char c, d;
-        cin>>type;
+    for (int cs=1; cs<=t; ++cs)
+    {
+        string a, b;
+        scanf("%s", buffer); a = buffer;
+        scanf("%s", buffer); b = buffer;
+        int na = a.size(), nb = b.size();
 
-        if (type==0) break;
-        if (type==1) {cin>>c;hash=append(hash,c);s+=c;}
-        if (type==2) {cin>>c;hash=prepend(hash,s.size(),c);
-                      s=c+s;}
-        if (type==3) {cin>>id>>c>>d;hash=replace(hash,id,c,d);
-                      s[s.size()-1-id]=d;}
-        if (type==4) {hash=pop_back(hash,s.back());
-                      s.pop_back();}
-        if (type==5) {hash=pop_front(hash,s.size(),s[0]);
-                      s.erase(s.begin());}
-        if (type==6) {cin>>id;hash=repeat(hash,s.size(),id);
-                      string t;for(int i=0;i<id;i++)t+=s;s=t;}
-        cout<<s<<" "<<Hash(s)<<" "<<hash<<" "<<endl;
+        PLL hb = Hash(b);
+        vector<PLL> ha = hashList(a);
+        int ans = 0;
+
+        for (int i=1; i+nb-1<=na; i++)
+            if (substringHash(ha, i, i+nb-1) == hb)  ans++;
+        printf("Case %d: %d\n", cs, ans);
     }
-
-    vector<PLL> hashlist = hashList(s);
-    for (int i=1; i<=s.size(); i++)
-        for (int j=i; j<=s.size(); j++) {
-            string sub = string(s.begin()+i-1, s.begin()+j);
-            PLL hash = substringHash(hashlist, i, j);
-            cout<<i<<" "<<j<<" "<<sub<<" "
-                <<Hash(sub)<<" "<<hash<<endl;
-        }
 }
