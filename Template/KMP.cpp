@@ -1,6 +1,26 @@
 #include<bits/stdc++.h>
 using namespace std;
 
+/// builds the prefix automaton in O(N*alphabet)
+vector< vector< int > >automaton;
+void buildAutomaton(const string& s)
+{
+    int n = s.size(), k = 0;
+
+    vector< int >zer(26, 0);
+    for (int i = 0; i <= n; i++) automaton.push_back(zer);
+
+    automaton[0][s[0]-'a'] = 1;
+    for (int i = 1; i <= n; i++) {
+        automaton[i] = automaton[k];
+
+        if (i < n) {
+            automaton[i][s[i]-'a'] = i+1;
+            k = automaton[k][s[i]-'a'];
+        }
+    }
+}
+
 /// everything 1-indexed
 /// v[i] = 0 -> empty string matched
 /// v[i] = k -> prefix s[0..(k-1)] matched
