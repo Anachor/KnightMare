@@ -1,17 +1,21 @@
-// Adjacency list implementation of Dinic's blocking flow algorithm.
-// This is very fast in practice, and only loses to push-relabel flow.
-//
-// Running time:
-//     O(|V|^2 |E|)
-//
-// INPUT:
-//     - graph, constructed using AddEdge()
-//     - source and sink
-//
-// OUTPUT:
-//     - maximum flow value
-//     - To obtain actual flow values, look at edges with capacity > 0
-//       (zero capacity edges are residual edges).
+/**
+ Adjacency list implementation of Dinic's blocking flow algorithm.
+ For Undirected graphs, add each edge in both directions.
+ This is very fast in practice, and only loses to push-relabel flow.
+ 
+ Source: Stanford Notebook
+ Running time:  O(V^2 E)
+ Memory : O(V+E)
+
+ INPUT:
+     - graph, constructed using AddEdge()
+     - source and sink
+
+ OUTPUT:
+     - maximum flow value
+     - To obtain actual flow values, look at edges with capacity > 0
+       (zero capacity edges are residual edges).
+**/
 
 #include<bits/stdc++.h>
 using namespace std;
