@@ -4,7 +4,6 @@ using namespace std;
 
 LL modit(LL x, LL mod) {
 	if(x>=mod) x-=mod;
-	//if(x<0) x+=mod;
 	return x;
 }
 
@@ -39,42 +38,29 @@ bool witness(LL a, LL n, LL u, int t){
 	return x!=1;
 }
 
-/// Platform dependent on RAND_MAX
-/// Toph: 2^31 - 1
-/// CF: 2^15 - 1
-/// Not random at all: Fix
-LL randll()
-{
-    if (RAND_MAX == (1<<15) - 1){
-        return (rand()*1LL<<48) + (rand()*1LL<<32) + (rand()*1LL<<16) + rand();
-    }
-    else if (RAND_MAX == (1LL<<32) - 1) {
-        return (rand()*1LL<<32) + rand();
-    }
-}
-
-/** iterate s times of witness on n
+/**
     return 1 if prime, 0 otherwise
+    Range : 10^18
 
+    Magic bases:
     n < 4,759,123,141        3 :  2, 7, 61
     n < 1,122,004,669,633    4 :  2, 13, 23, 1662803
     n < 3,474,749,660,383    6 :  2, 3, 5, 7, 11, 13
     n < 2^64                 7 : 2, 325, 9375, 28178, 450775, 9780504, 1795265022
-
-    Make sure testing integer is in range [2, n-2] if
-    you want to use magic.
+    Handles 40000 18 digit primes in 1 second on Toph
 */
 
-bool miller_rabin(LL n, int s = 50) {
+vector<LL> bases = {2, 325, 9375, 28178, 450775, 9780504, 1795265022};
+bool miller_rabin(LL n) {
 	if (n < 2)    return 0;
-	if (n%2 == 0) return n==2;
+	if (n%2==0)   return n==2;
 
 	LL u = n-1;
 	int t = 0;
 	while(u%2==0)   u/=2, t++;  // n-1 = u*2^t
 
-	while(s--) {
-		LL a = randll()%(n-1) + 1;
+	for (LL v: bases) {
+		LL a = v%(n-1) + 1;
 		if(witness(a, n, u, t)) return 0;
 	}
 	return 1;
@@ -85,14 +71,22 @@ LL f(LL x, LL mod) {
 	return modit(mult(x, x, mod) + 1, mod);
 }
 
+mt19937_64 rng;
+LL randll(LL lo, LL hi) {
+    return uniform_int_distribution<LL>(lo, hi)(rng);
+}
+
 /// If n is prime, returns n
 /// Otherwise returns a proper divisor of n
+/// Able to factorize ~40 18 digit semiprimes in 1 second on Toph
+/// Range : 10^18
 LL pollard_rho(LL n) {
     if (n==1)               return 1;
+    if (n%2==0)             return 2;
 	if (miller_rabin(n))    return n;
 
     while (true) {
-        LL x = randll() % (n-1) + 1;
+        LL x = randll(1, n);
         LL y = 2, res = 1;
 
         for (int sz=2; res == 1; sz*=2) {
@@ -102,61 +96,22 @@ LL pollard_rho(LL n) {
             }
             y = x;
         }
+        cout<<x<<" "<<res<<endl;
         if (res!=0 && res!=n) return res;
     }
 }
 
-const int K = 3e5+7;
-vector<int> primes;
-bool isp[K];
-
-void sieve()
-{
-    fill(isp, isp+K, 1);
-    isp[0] = isp[1] = 0;
-
-    for (int i=2; i<K; i++)
-        if (isp[i]) {
-            for (int j=2*i; j<K; j+=i)    isp[j] = 0;
-            primes.push_back(i);
-        }
-}
-
-
-#define PLL pair<LL, LL>
 int main()
 {
-    sieve();
-    LL x;
+    ///IMPORTANT!!!!!!!
+    rng = mt19937_64(chrono::steady_clock::now().time_since_epoch().count());
     int t;
     cin>>t;
 
-    for (int i=0; i<t; i++)
-    {
+    while (t--) {
+        LL x;
         cin>>x;
-        LL tt = x;
-        vector<PLL> fac;
-
-        for (auto p: primes)
-            if (x%p == 0) {
-                int e = 0;
-                while (x%p == 0)    x/=p, e++;
-                fac.push_back(PLL(p, e));
-            }
-
-        if (x > 1) {
-            LL p = pollard_rho(x);
-            fac.push_back(PLL(p, 1));
-            if (p!=x)    fac.push_back(PLL(x/p, 1));
-        }
-        sort(fac.begin(), fac.end());
-        cout<<tt<<" = ";
-        for (int i=0; i<fac.size(); i++)
-        {
-            cout<<fac[i].first;
-            if (fac[i].second > 1)  cout<<"^"<<fac[i].second;
-            if ( i!= fac.size()-1)  cout<<" * ";
-        }
-        cout<<"\n";
+        LL factor = pollard_rho(x);
+        cout<<x<<" = "<<factor<<" * "<<x/factor<<endl;
     }
 }
