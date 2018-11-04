@@ -50,25 +50,27 @@ PT ComputeCircleCenter(PT a, PT b, PT c) {
 }
 
 struct Plane {
-    double a, b, c, d;      ///Ax + By + Cz = D
-    Plane(double a, double b, double c, double d) : a(a), b(b), c(c), d(d) {}
+    PT normal;
+    double d;      ///Ax + By + Cz = D
+    Plane(double a, double b, double c, double d) : normal(a, b, c), d(d) {}
+    Plane(PT normal, double d) : normal(normal), d(d) {}
 };
 
 ///Get plane given by three Non-Collinear Points
 Plane getPlane(PT a, PT b, PT c) {
     PT normal = cross(b-a, c-a);
-    assert(len(normal) > EPS);
+    assert(len2(normal) > EPS);
     double d = dot(normal, a);
-    return Plane(normal.x, normal.y, normal.z, d);
+    return Plane(normal, d);
 }
 
 ostream &operator<<(ostream &os, const Plane &p) {
-    return os << p.a << "x + " << p.b << "y + " << p.c << "z = "<<p.d;
+    return os << p.normal.x << "x + " << p.normal.y << "y + " << p.normal.z << "z = "<<p.d;
 }
 
 /// distance from point a to plane p
 double PointPlaneDistance(PT a, Plane p) {
-    return abs(p.a*a.x + p.b*a.y + p.c*a.z + p.d) / sqrt(p.a*p.a + p.b*p.b + p.c*p.c);
+    return abs(dot(p.normal, a) - p.d) / sqrt(len2(p.normal));
 }
 
 int main()
