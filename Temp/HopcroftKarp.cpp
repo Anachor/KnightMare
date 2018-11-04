@@ -9,10 +9,11 @@ using namespace std;
  
 const int maxN = 50000+5, maxM = 50000+5;
 struct HopcroftKarp {
+  int n;
   int vis[maxN], level[maxN], ml[maxN], mr[maxM];
   vector<int> edge[maxN]; // constructing edges for left part only
  
-  HopcroftKarp(int n) {      // n = nodes in left part
+  HopcroftKarp(int n) : n(n) {      // n = nodes in left part
     for (int i = 1; i <= n; ++i) edge[i].clear();
   }
  
@@ -33,7 +34,7 @@ struct HopcroftKarp {
     return false;
   }
  
-  int matching(int n) { // n for left
+  int matching() { // n for left
     memset(vis, 0, sizeof vis);
     memset(level, 0, sizeof level);
     memset(ml, -1, sizeof ml);
@@ -86,5 +87,5 @@ int main()
         solver.add(a, b);
     }
  
-    cout<<solver.matching(n)<<endl;
+    cout<<solver.matching()<<endl;
 }
