@@ -1,4 +1,4 @@
 # KnightMare
 Contest Template
 
-Last Printed: 4/8/2018
+Last Printed: 9/11/2018
