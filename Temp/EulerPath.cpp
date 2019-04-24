@@ -14,7 +14,6 @@ struct Eulerpath {
 
     Eulerpath(int nn) : n(nn), adj(nn) {}
     void addEdge(int u, int v) {
-//        cout<<"--->"<<u<<" "<<v<<endl;
         edges.push_back({u, v});
         vis.push_back(0);
         int id = edges.size()-1;
@@ -23,7 +22,6 @@ struct Eulerpath {
     }
 
     bool getTour(vector<int> &path) {
-
         int u = 0, cnt=0;
         for (int i=0; i<n; i++)
             if(adj[i].size()%2) {
@@ -40,7 +38,6 @@ struct Eulerpath {
             while (adj[u].size() && vis[adj[u].back()] == 1)    adj[u].pop_back();
 
             if (adj[u].empty()) {
-//                cout<<"---> END: "<<u<<endl;
                 path.push_back(u);
                 if (st.empty()) break;
                 u = st.top();
@@ -50,7 +47,6 @@ struct Eulerpath {
                 st.push(u);
                 int id = adj[u].back();
                 vis[id] = 1;
-//                cout<<"---> GO: "<<u<<" "<<edges[id].other(u)<<endl;
                 u = edges[id].other(u);
             }
         }
