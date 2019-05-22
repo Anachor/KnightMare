@@ -26,7 +26,7 @@ typedef vector<VI> VVI;
 typedef vector<LL> VL;
 typedef vector<VL> VVL;
 
-const int INF = 1e18+7;
+const LL INF = 1e18+7;
 
 struct EdmondsKarp
 {
