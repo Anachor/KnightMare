@@ -42,8 +42,7 @@ void build(int u, int st, int en) {
     }
 }
 
-void update(int u, int st, int en, int l, int r, int x)
-{
+void update(int u, int st, int en, int l, int r, int x) {
     propagate(u, st, en);
     if (r<st || en<l)  return;
     else if (l<=st && en<=r) {
@@ -58,8 +57,7 @@ void update(int u, int st, int en, int l, int r, int x)
     }
 }
 
-LL query(int u, int st, int en, int l, int r)
-{
+LL query(int u, int st, int en, int l, int r) {
     propagate(u, st, en);
     if (r<st || en<l)  return 0;        /// 5. Proper null value
     else if (l<=st && en<=r)    return tr[u];
@@ -69,8 +67,7 @@ LL query(int u, int st, int en, int l, int r)
     }
 }
 
-void debug(int u, int st, int en)
-{
+void debug(int u, int st, int en) {
     cout<<"--->"<<u<<" "<<st<<" "<<en<<" "<<tr[u]<<" "<<lz[u]<<endl;
     if (st==en) return;
     int mid = (st+en)/2;
@@ -78,8 +75,7 @@ void debug(int u, int st, int en)
     debug(2*u+1, mid+1, en);
 }
 
-int main()
-{
+int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
 
