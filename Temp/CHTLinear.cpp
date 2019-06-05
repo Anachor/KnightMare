@@ -21,7 +21,7 @@ struct CHT {
 
     ///Use double comp if M,C is LL range
     bool useless(int l1, int l2, int l3) {
-        return (C[l3]-C[l1])*(M[l1]-M[l2]) < (C[l2]-C[l1])*(M[l1]-M[l3]);
+        return (C[l3]-C[l1])*(M[l1]-M[l2]) <= (C[l2]-C[l1])*(M[l1]-M[l3]);
     }
 
     LL f(int id, LL x) {
