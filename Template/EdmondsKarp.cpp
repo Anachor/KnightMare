@@ -104,5 +104,5 @@ int main()
         solver.AddEdge(u, v, cap);
     }
 
-    cout<<solver.MaxFlow('A', 'Z')<<endl;;;
+    cout<<solver.MaxFlow('A', 'Z')<<endl;
 }
