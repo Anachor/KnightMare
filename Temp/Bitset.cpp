@@ -9,7 +9,7 @@ typedef unsigned long long ULL;
 using namespace std;
 
 struct Bitset {
-    const static int K = 64, X = 63;
+    const static int B = 6, K = 64, X = 63;
 
     ///returns mask with bits l to r set, and others reset
     static inline ULL getmask(int l, int r) {
@@ -31,24 +31,24 @@ struct Bitset {
     }
 
     bool get(int i) {
-        return bs[i>>6] & (1ULL<<(i&X));
+        return bs[i>>B] & (1ULL<<(i&X));
     }
 
     void set(int i) {
-        bs[i>>6] |= (1ULL<<(i&X));
+        bs[i>>B] |= (1ULL<<(i&X));
     }
 
     void reset(int i) {
-        bs[i>>6] &= ~(1ULL<<(i&X));
+        bs[i>>B] &= ~(1ULL<<(i&X));
     }
 
     void flip(int i) {
-        bs[i>>6] ^= (1ULL<<(i&X));
+        bs[i>>B] ^= (1ULL<<(i&X));
     }
 
     void set(int l, int r) {
-        int idl = l>>6;
-        int idr = r>>6;
+        int idl = l>>B;
+        int idr = r>>B;
         int posl = l&X;
         int posr = r&X;
 
@@ -57,7 +57,7 @@ struct Bitset {
             return;
         }
 
-        bs[idl] |= getmask(posl, 63);
+        bs[idl] |= getmask(posl, X);
         bs[idr] |= getmask(0, posr);
 
         for (int id = idl+1; id < idr; id++)
@@ -65,8 +65,8 @@ struct Bitset {
     }
 
     void reset(int l, int r) {
-        int idl = l>>6;
-        int idr = r>>6;
+        int idl = l>>B;
+        int idr = r>>B;
         int posl = l&X;
         int posr = r&X;
 
@@ -75,7 +75,7 @@ struct Bitset {
             return;
         }
 
-        bs[idl] &= ~getmask(posl, 63);
+        bs[idl] &= ~getmask(posl, X);
         bs[idr] &= ~getmask(0, posr);
 
         for (int id = idl+1; id < idr; id++)
@@ -83,8 +83,8 @@ struct Bitset {
     }
 
     void flip(int l, int r) {
-        int idl = l>>6;
-        int idr = r>>6;
+        int idl = l>>B;
+        int idr = r>>B;
         int posl = l&X;
         int posr = r&X;
 
@@ -93,7 +93,7 @@ struct Bitset {
             return;
         }
 
-        bs[idl] ^= getmask(posl, 63);
+        bs[idl] ^= getmask(posl, X);
         bs[idr] ^= getmask(0, posr);
 
         for (int id = idl+1; id < idr; id++)
