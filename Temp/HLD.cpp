@@ -1,6 +1,6 @@
+
 /*
     Heavy-Light Decomposition
-
     1.  flat[] (0-indexed) has the flattened array of the tree according
         to the decomposition into chains
     2.  flatIdx[] is the reverse map of flat[]
@@ -105,6 +105,10 @@ vector<PII>getChainSegments(int u, int v)
     upSegments(l, u, rt);
     upSegments(l, v, rt);
     return rt;
+}
+
+PII getSubtreeSegment(int u) {
+    return PII(flatIdx[u], flatIdx[u]+sbtr[u]-1);
 }
 
 void performHLD(int root)
