@@ -37,14 +37,41 @@ const int MAXN = 100007;
 
 struct LinkCutTree {
     struct Node {
-        int L, R, P;
+        int L, R, P, lazyFlip;
         int PP;
     };
 
     Node LCT[MAXN];
 
+    void normalize(int u) {
+        assert(u != -1);
+        if (LCT[u].L != -1) LCT[LCT[u].L].P = u;
+        if (LCT[u].R != -1) LCT[LCT[u].R].P = u;
+        // (+ update sum of subtree elements etc. if wanted
+    }
+
+    // set v as p's left child
+    void setLeftChild(int p, int v) {
+        LCT[p].L = v;
+        normalize(p);
+    }
+    // set v as p's right child
+    void setRightChild(int p, int v) {
+        LCT[p].R = v;
+        normalize(p);
+    }
+
+    void pushLazy(int u) {
+        if (!LCT[u].lazyFlip) return;
+        swap(LCT[u].L, LCT[u].R);
+        LCT[u].lazyFlip = 0;
+        if (LCT[u].L != -1) LCT[LCT[u].L].lazyFlip ^= 1;
+        if (LCT[u].R != -1) LCT[LCT[u].R].lazyFlip ^= 1;
+    }
+
     void make_tree(int v) {
         LCT[v].L = LCT[v].R = LCT[v].P = LCT[v].PP = -1;
+        LCT[v].lazyFlip = 0;
     }
 
     void rotate(int v) {
@@ -52,32 +79,50 @@ struct LinkCutTree {
         int p = LCT[v].P;
         int g = LCT[p].P;
         if (LCT[p].L == v) {
-            LCT[p].L = LCT[v].R;
-            if (LCT[v].R != -1) {
-                LCT[LCT[v].R].P = p;
-            }
-            LCT[v].R = p;
-            LCT[p].P = v;
+            setLeftChild(p, LCT[v].R);
+//            LCT[p].L = LCT[v].R;
+//            if (LCT[v].R != -1) {
+//                LCT[LCT[v].R].P = p;
+//            }
+            setRightChild(v, p);
+//            LCT[v].R = p;
+//            LCT[p].P = v;
         } else {
-            LCT[p].R = LCT[v].L;
-            if (LCT[v].L != -1) {
-                LCT[LCT[v].L].P = p;
-            }
-            LCT[v].L = p;
-            LCT[p].P = v;
+            setRightChild(p, LCT[v].L);
+//            LCT[p].R = LCT[v].L;
+//            if (LCT[v].L != -1) {
+//                LCT[LCT[v].L].P = p;
+//            }
+            setLeftChild(v, p);
+//            LCT[v].L = p;
+//            LCT[p].P = v;
         }
+
         LCT[v].P = g;
         if (g != -1) {
-            if (LCT[g].L == p) LCT[g].L = v;
-            else LCT[g].R = v;
+            if (LCT[g].L == p) {
+                setLeftChild(g, v);
+//                LCT[g].L = v;
+            } else {
+                setRightChild(g, v);
+//                LCT[g].R = v;
+            }
         }
+
         // must preserve path-pointer!
         // (this only has an effect when g is -1)
         LCT[v].PP = LCT[p].PP;
         LCT[p].PP = -1;
     }
 
+    void pushEmAll(int v) {
+        if (LCT[v].P != -1) pushEmAll(LCT[v].P);
+        pushLazy(v);
+    }
+
     void splay(int v) {
+//        cout << "splay " << v << endl;
+        pushEmAll(v);
         while (LCT[v].P != -1) {
             int p = LCT[v].P;
             int g = LCT[p].P;
@@ -100,8 +145,10 @@ struct LinkCutTree {
         if (LCT[v].R != -1) {
             LCT[LCT[v].R].PP = v;
             LCT[LCT[v].R].P = -1;
-            LCT[v].R = -1;
+            setRightChild(v, -1);
+//            LCT[v].R = -1;
         }
+
         int ret = v;
         while (LCT[v].PP != -1) {
             int w = LCT[v].PP;
@@ -111,8 +158,10 @@ struct LinkCutTree {
                 LCT[LCT[w].R].PP = w;
                 LCT[LCT[w].R].P = -1;
             }
-            LCT[w].R = v;
-            LCT[v].P = w;
+            LCT[v].PP = -1; /// ** missed ** Do we really need this?
+            setRightChild(w, v);
+//            LCT[w].R = v;
+//            LCT[v].P = w;
             splay(v);
         }
         return ret;
@@ -121,16 +170,22 @@ struct LinkCutTree {
     int find_root(int v) {
         access(v);
         int ret = v;
-        while (LCT[ret].L != -1) ret = LCT[ret].L;
+        while (LCT[ret].L != -1) {
+            ret = LCT[ret].L;
+            pushLazy(ret);
+        }
         access(ret);
         return ret;
     }
 
+    /// make w, parent of v where v is a root
     void link(int v, int w) {// attach v's root to w
         access(w);
-        LCT[v].L = w;   // the root can only have right children in
-                        // its splay tree, so no need to check
-        LCT[w].P = v;
+        // the root can only have right children in
+        // its splay tree, so no need to check
+        setLeftChild(v, w);
+//        LCT[v].L = w;
+//        LCT[w].P = v;
         LCT[w].PP = -1;
     }
 
@@ -139,15 +194,33 @@ struct LinkCutTree {
         if (LCT[v].L != -1) {
             LCT[LCT[v].L].P = -1;
             LCT[LCT[v].L].PP = -1;
-            LCT[v].L = -1;
+            setLeftChild(v, -1);
+//            LCT[v].L = -1;
         }
     }
 
+    void make_root(int v) {
+        access(v);
+        int l = LCT[v].L;
+        if (l != -1) {
+            setLeftChild(v, -1);
+            LCT[l].P = -1;
+            LCT[l].PP = v;
+            LCT[l].lazyFlip ^= 1;
+        }
+    }
+
+    bool isConnected(int p, int q) {
+        return find_root(p)==find_root(q);
+    }
+
+    /// assuming p and q is in the same tree
     int LCA(int p, int q) {
         access(p);
         return access(q);
     }
 };
+
 
 int main()
 {
