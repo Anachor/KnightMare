@@ -4,10 +4,8 @@ Use at own risk :P - Anachor
 */
 
 #include<bits/stdc++.h>
-#define double long double
 using namespace std;
 
-double INF = 1e100;
 double EPS = 1e-10;
 
 struct PT {
