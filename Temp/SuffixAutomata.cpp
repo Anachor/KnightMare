@@ -28,7 +28,7 @@ void sa_init() {
 void add(char ch) {
     int c = ch-'a';
 
-    int cur = sz++;
+    int cur = sz++;                             //create new node
     len[cur] = len[last]+1;
 
     int u = last;
@@ -46,7 +46,7 @@ void add(char ch) {
             link[cur] = v;
         }
         else {
-            int clone = sz++;
+            int clone = sz++;                   //create node by cloning
             len[clone] = 1 + len[u];
             link[clone] = link[v];
 
