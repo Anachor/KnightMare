@@ -23,7 +23,7 @@ double dot(PT p, PT q)     { return p.x*q.x+p.y*q.y+p.z*q.z; }
 double dist2(PT p, PT q)   { return dot(p-q,p-q); }
 PT cross(PT p, PT q)       { return PT(p.y*q.z-p.z*q.y, p.z*q.x-p.x*q.z, p.x*q.y-p.y*q.x); }
 double len2(PT p)          { return dot(p, p);}
-double len(PT p)           { return sqrtl(dot(p, p));}
+double len(PT p)           { return sqrt(dot(p, p));}
 double triple(PT a, PT b, PT c) {return dot(a, cross(b, c));}
 
 bool isCoplanar(PT a, PT b, PT c, PT d) {
